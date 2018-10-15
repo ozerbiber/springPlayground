@@ -6,9 +6,6 @@ import javax.persistence.*;
 
 import java.util.Set;
 
-import static javax.persistence.DiscriminatorType.STRING;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
-
 @Entity
 @Table(name="developers")
 @Data
@@ -22,11 +19,7 @@ public class DeveloperBase extends BasicEntity{
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "proficiencyId")
     private Proficiency proficiency;
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinTable(name = "developer_tags",
-            joinColumns = @JoinColumn(name = "developerId", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tagId", referencedColumnName = "id")
-    )
-    private Set<Tag> tags;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Tag> tag;
 
 }

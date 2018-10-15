@@ -2,58 +2,59 @@ package com.ozer.deneme.Controller;
 
 import com.ozer.deneme.Repository.*;
 import com.ozer.deneme.model.*;
+import com.ozer.deneme.service.DeveloperService;
+import com.ozer.deneme.service.TagService;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@Transactional
+@RequestMapping(path = "/api")
 public class DeveloperController {
     @Autowired
-    private DeveloperBaseRepository developerBaseRepository;
+    private DeveloperService developerService;
     @Autowired
-    private DeveloperRepository developerRepository;
-    @Autowired
-    private AvailabilityRepository availabilityRepository;
-    @Autowired
-    private ProficiencyRepository proficiencyRepository;
-    @Autowired
-    private TagRepository tagRepository;
+    private TagService tagService;
+
+
     @GetMapping(path = "/developer-base")
     public Page<DeveloperBase> getAllDeveloperBase(@QuerydslPredicate(root = DeveloperBase.class) Predicate predicate, Pageable pageable){
-        return developerBaseRepository.findAll(predicate,pageable);
+        return developerService.findAllDeveloperBase(predicate,pageable);
     }
-    public Page<Developer> getAllDeveloper(Pageable pageable){
-        return developerRepository.findAll(pageable);
+    @GetMapping(path = "/developer/{developerId}")
+    public DeveloperProfile getDeveloperProfile(@Valid @PathVariable Long developerId){
+        return developerService.findDeveloperProfile(developerId);
     }
     @PostMapping(path = "/developer")
     public Developer saveDeveloper(@RequestBody Developer developer){
-        return developerRepository.save(developer);
+        return developerService.saveDeveloper(developer);
     }
-    @PostMapping(path = "/developer-base")
-    public DeveloperBase saveDeveloperBase(@RequestBody DeveloperBase developerBase){
-        return developerBaseRepository.save(developerBase);
+    @PutMapping(path = "/developer")
+    public Developer updateDeveloper(@RequestBody Developer developer){
+        return developerService.updateDeveloper(developer);
+    }
+    @GetMapping(path = "/tag")
+    public List<Tag> getAllTag(){
+        return tagService.allTag();
     }
     @PostMapping(path = "/tag")
     public Tag saveDeveloper(@RequestBody Tag tag){
-        return tagRepository.save(tag);
+        return tagService.saveTag(tag);
     }
-    @PostMapping(path = "/proficiency")
-    public Proficiency saveProficiency(@RequestBody Proficiency proficiency){
-        return proficiencyRepository.save(proficiency);
+    @PostMapping(path = "/test-model")
+    public TestModel saveTestModel(@RequestBody TestModel testModel){
+        return developerService.saveTestModel(testModel);
     }
-    @PostMapping(path = "/availability")
-    public Availability saveDeveloper(@RequestBody Availability availability){
-        return availabilityRepository.save(availability);
+    @PutMapping(path = "/test-model")
+    public TestModel updateTestModel(@RequestBody TestModel testModel){
+        return developerService.updateTestModel(testModel);
     }
+
 
 }
